@@ -1,45 +1,38 @@
 function BorrarCD(idParametro)
 {
 	//alert(idParametro);
-		var funcionAjax=$.ajax({
-		url:"nexo.php",
-		type:"post",
-		data:{
-			queHacer:"BorrarCD",
-			id:idParametro	
-		}
-	});
-	funcionAjax.done(function(retorno){
+
+	$.ajax({url:"nexo.php",type:"post",data:{queHacer:"BorrarCD",id:idParametro}})
+	.then(function(exito){
 		Mostrar("MostrarGrilla");
-		$("#informe").html("cantidad de eliminados "+ retorno);	
-		
+		$("#informe").html("cantidad de eliminados"+retorno);
+	},function(error){
+		$("#informe").html(retorno.responseText);
 	});
-	funcionAjax.fail(function(retorno){	
-		$("#informe").html(retorno.responseText);	
-	});	
+
+
 }
 
 function EditarCD(idParametro)
 {
-	var funcionAjax=$.ajax({
-		url:"nexo.php",
-		type:"post",
-		data:{
-			queHacer:"TraerCD",
-			id:idParametro	
-		}
-	});
-	funcionAjax.done(function(retorno){
+
+	$.ajax({url:"nexo.php",type:"post",data:{queHacer:"TraerCD",id:idParametro}})
+	.then(function(exito){
+
+		setTimeout(function(){
 		var cd =JSON.parse(retorno);	
 		$("#idCD").val(cd.id);
 		$("#cantante").val(cd.cantante);
 		$("#titulo").val(cd.titulo);
-		$("#anio").val(cd.año);
+		$("#anio").val(cd.año);},2000);
+
+		Mostrar("MostrarFormAlta");
+
+	}, function(error){
+
+		$("#informe").html(retorno.responseText);			
 	});
-	funcionAjax.fail(function(retorno){	
-		$("#informe").html(retorno.responseText);	
-	});	
-	Mostrar("MostrarFormAlta");
+
 }
 
 function GuardarCD()
@@ -49,23 +42,17 @@ function GuardarCD()
 		var titulo=$("#titulo").val();
 		var anio=$("#anio").val();
 
-		var funcionAjax=$.ajax({
-		url:"nexo.php",
-		type:"post",
-		data:{
-			queHacer:"GuardarCD",
-			id:id,
-			cantante:cantante,
-			titulo:titulo,
-			anio:anio	
-		}
-	});
-	funcionAjax.done(function(retorno){
-			Mostrar("MostrarGrilla");
-		$("#informe").html("cantidad de agregados "+ retorno);	
-		
-	});
-	funcionAjax.fail(function(retorno){	
-		$("#informe").html(retorno.responseText);	
-	});	
+		$.ajax({url:"nexo.php",type:"post",data:{queHacer:"GuardarCD",
+												 id:id,
+												 cantante:cantante,
+												 titulo:titulo,
+												 anio:anio}})
+		.then(function(exito){
+
+			MostrarGrilla('MostrarGrilla');
+			$("#informe").html("cantidad de agregados "+ retorno);	
+		},function(error){
+
+			$("#informe").html(retorno.responseText);
+		});	
 }
